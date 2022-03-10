@@ -10,8 +10,7 @@ const ApiContextProvider: FC = ({children}) => {
   const [state, dispatch] = useReducer(apiContextReducer, initialState)
 
   const getApiStatus = async () => {
-    const allPromises = Promise.all(ENDPOINTS.map(url => fetch(url)))
-    const allResponses = await allPromises
+    const allResponses = await Promise.all(ENDPOINTS.map(url => fetch(url)))
 
     const results = new Map<string, ApiResponse>()
 

@@ -4,7 +4,7 @@ import { useApiContext } from '../context'
 import styles from './main.styles.module.css'
 
 const Main = () => {
-  const {state, dispatch}= useApiContext()
+  const {state}= useApiContext()
 
   return (
     <div>
@@ -21,7 +21,6 @@ const Main = () => {
             ))
           }
         </div>
-        Content
       </section>
     </div>
   )
