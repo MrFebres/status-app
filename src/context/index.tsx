@@ -1,8 +1,8 @@
-import { createContext, Dispatch, FC, useContext, useLayoutEffect, useReducer } from "react"
+import { createContext, Dispatch, FC, useContext, useEffect, useLayoutEffect, useReducer } from "react"
 
 import { ApiActionType, ApiClient, ApiClientAction, ApiResponse } from "../types"
 import { apiContextReducer, initialState } from "./api-reducer"
-import { ENDPOINTS } from "../utils/constants"
+import { ENDPOINTS, REFETCH_INTERVAL } from "../utils/constants"
 
 const ApiContext = createContext<{state: ApiClient, dispatch: Dispatch<ApiClientAction>} | undefined>(undefined)
 
@@ -24,7 +24,7 @@ const ApiContextProvider: FC = ({children}) => {
       } else {
         result = {
           hostname: `${response.status}`,
-          message: 'Dead',
+          message: 'Error',
           success: false,
         }
       }
@@ -38,9 +38,16 @@ const ApiContextProvider: FC = ({children}) => {
     })
   }
 
-  useLayoutEffect(() => {
-    getApiStatus()
-  }, [])
+  useEffect(() => {
+    let interval: NodeJS.Timer
+    if (!state.results) {
+      getApiStatus()
+    } else {
+      interval = setInterval(getApiStatus, REFETCH_INTERVAL * 1000)
+    }
+
+    return () => interval && clearInterval(interval)
+  }, [state])
 
   const value = {state, dispatch}
 

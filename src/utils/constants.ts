@@ -23,3 +23,5 @@ const BASE_URL = 'https://api.factoryfour.com/'
 const BASE_END_POINT = '/health/status'
 
 export const ENDPOINTS = ASSETS_NAMES.map(asset => `${BASE_URL}${asset}${BASE_END_POINT}`)
+
+export const REFETCH_INTERVAL = 15 // Express in seconds.
