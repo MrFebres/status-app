@@ -1,7 +1,11 @@
-import { ASSETS_NAMES } from '../utils/constants'
+import { Card } from '../components/card'
+import { useApiContext } from '../context'
+
 import styles from './main.styles.module.css'
 
 const Main = () => {
+  const {state, dispatch}= useApiContext()
+
   return (
     <div>
       <header style={{backgroundColor: '#344152', padding: '10px'}}>
@@ -10,12 +14,10 @@ const Main = () => {
       <section>
         <div className={styles.cardListContainer}>
           {
-            ASSETS_NAMES.map(item => (
-              <div className={styles.card}>
-                <h3 className={styles.cardTitle}>{item}</h3>
-                <p className={styles.apiStatus}>Healthy</p>
-                <p className={styles.messageText}>message</p>
-              </div>
+            state.results &&
+            state.results.size > 0 &&
+            Array.from(state.results.entries()).map(([key, value]) => (
+              <Card apiInfo={value} key={key} title={key} />
             ))
           }
         </div>

@@ -1,20 +1,23 @@
 import { Reducer } from 'react';
 
 export enum ApiActionType {
-  GET_USER_KEY,
-  REMOVE_USER_INFO,
-  SET_USER_ADDRESS,
-  SET_USER_INFO,
-  SET_USER_KEY
+  SET_API_RESPONSE
 }
 
 export type ApiClient = {
-  results: any
+  results?: Map<string, ApiResponse>
 };
 
 export type ApiClientAction = {
-  payload?: Partial<ApiClient>;
+  payload?: ApiClient;
   type: ApiActionType;
 };
+
+export type ApiResponse = {
+  hostname: string,
+  message: string,
+  success: boolean,
+  time?: number
+}
 
 export type ApiClientReducer = Reducer<ApiClient, ApiClientAction>;

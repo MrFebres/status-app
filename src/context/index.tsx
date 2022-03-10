@@ -1,24 +1,53 @@
-import { createContext, Dispatch, FC, useContext, useLayoutEffect, useReducer } from "react"
-import axios from "axios"
+import { createContext, Dispatch, FC, useContext, useEffect, useLayoutEffect, useReducer } from "react"
 
-import { ApiClient, ApiClientAction } from "../types"
+import { ApiActionType, ApiClient, ApiClientAction, ApiResponse } from "../types"
 import { apiContextReducer, initialState } from "./api-reducer"
-import { ENDPOINTS } from "../utils/constants"
+import { ENDPOINTS, REFETCH_INTERVAL } from "../utils/constants"
 
 const ApiContext = createContext<{state: ApiClient, dispatch: Dispatch<ApiClientAction>} | undefined>(undefined)
 
 const ApiContextProvider: FC = ({children}) => {
   const [state, dispatch] = useReducer(apiContextReducer, initialState)
 
-  const getApiStatus = () => {
-    Promise.all(ENDPOINTS.map(url => axios.get(url))).then((data)=> {
-      console.log({data})
-    });
+  const getApiStatus = async () => {
+    const allPromises = Promise.all(ENDPOINTS.map(url => fetch(url)))
+    const allResponses = await allPromises
+
+    const results = new Map<string, ApiResponse>()
+
+    for (const response of allResponses) {
+      const assetName = response.url.split('/')[3]
+      let result: any
+      if (response.ok) {
+        const translatedResponse = await response.json()
+        result = translatedResponse
+      } else {
+        result = {
+          hostname: `${response.status}`,
+          message: 'Error',
+          success: false,
+        }
+      }
+  
+      results.set(assetName, result)
+    }
+
+    dispatch({
+      type: ApiActionType.SET_API_RESPONSE,
+      payload: { results }
+    })
   }
 
-  useLayoutEffect(() => {
-    getApiStatus()
-  }, [])
+  useEffect(() => {
+    let interval: NodeJS.Timer
+    if (!state.results) {
+      getApiStatus()
+    } else {
+      interval = setInterval(getApiStatus, REFETCH_INTERVAL * 1000)
+    }
+
+    return () => interval && clearInterval(interval)
+  }, [state])
 
   const value = {state, dispatch}
 
