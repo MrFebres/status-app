@@ -1,0 +1,41 @@
+.apiStatus {
+  align-items: center;
+  background-color: green;
+  color: white;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
+
+.card {
+  border-radius: 10px;
+  display: grid;
+  grid-template-rows: 1fr 0.5fr 1fr;
+  padding: 0.5rem;
+  box-shadow: 0px 5px 50px gray;
+}
+
+.card:hover {
+  box-shadow: 0px 5px 25px black;
+}
+
+.cardTitle {
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.messageText {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  word-wrap: break-word;
+}
+
+.negativeApiStatus {
+  align-items: center;
+  background-color: red;
+  color: black;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
