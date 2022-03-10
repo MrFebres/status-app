@@ -1,8 +1,11 @@
+import { ApiContextProvider } from "./context";
 import Main from "./main";
 
 const App = () => {
   return (
-    <Main />
+    <ApiContextProvider>
+      <Main />
+    </ApiContextProvider>
   );
 }
 
